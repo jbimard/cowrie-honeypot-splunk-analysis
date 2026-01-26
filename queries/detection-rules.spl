@@ -1,0 +1,54 @@
+# ============================================
+# DETECTION RULES & ALERTS
+# Automated threat detection queries
+# ============================================
+
+# Alert 1: Brute Force Detection
+# Triggers when 5+ failed logins from same IP in 10 minutes
+index=honeypot eventid=cowrie.login.failed
+| bin _time span=10m
+| stats count by _time, src_ip, username
+| where count >= 5
+| eval alert="Brute Force Attack Detected"
+| table _time, src_ip, username, count, alert
+
+# Alert 2: Successful Login After Brute Force
+# Indicates credential stuffing success
+index=honeypot (eventid=cowrie.login.failed OR eventid=cowrie.login.success)
+| transaction src_ip, username maxspan=1h
+| where mvcount(eventid) > 1 AND mvfind(eventid, "cowrie.login.success") >= 0
+| eval alert="Successful Login After Failed Attempts"
+| table _time, src_ip, username, password, alert
+
+# Alert 3: Malware Download Attempt
+# Detects wget/curl to suspicious domains
+index=honeypot eventid=cowrie.command.input (input="*wget*" OR input="*curl*")
+| eval alert="Malware Download Attempt"
+| table _time, src_ip, input, alert
+
+# Alert 4: Credential Theft Indicators
+# Detects attempts to access password files
+index=honeypot eventid=cowrie.command.input (input="*/etc/shadow*" OR input="*/etc/passwd*")
+| eval alert="Credential Theft Attempt"
+| table _time, src_ip, input, alert
+
+# Alert 5: Privilege Escalation Attempt
+# Detects sudo/su usage
+index=honeypot eventid=cowrie.command.input (input="*sudo*" OR input="*su *")
+| eval alert="Privilege Escalation Attempt"
+| table _time, src_ip, input, alert
+
+# Alert 6: Backdoor Creation
+# Detects user account creation
+index=honeypot eventid=cowrie.command.input (input="*useradd*" OR input="*adduser*")
+| eval alert="Backdoor User Creation Attempt"
+| table _time, src_ip, input, alert
+
+# Alert 7: Rapid Command Execution
+# Detects automated scripts (10+ commands in 1 minute)
+index=honeypot eventid=cowrie.command.input
+| bin _time span=1m
+| stats count by _time, src_ip, session
+| where count >= 10
+| eval alert="Automated Attack Script Detected"
+| table _time, src_ip, session, count, alert
