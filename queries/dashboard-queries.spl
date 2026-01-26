@@ -1,0 +1,82 @@
+# ============================================
+# DASHBOARD QUERIES
+# Advanced analysis for Splunk dashboards
+# ============================================
+
+# ========== DASHBOARD 2: THREAT INTELLIGENCE ==========
+
+# MITRE ATT&CK Technique Mapping
+index=honeypot earliest=0 eventid=cowrie.command.input 
+| eval technique=case(
+    match(input, "^(whoami|id|uname|hostname|pwd)"), "T1033 - System Owner/User Discovery",
+    match(input, "^(cat /etc/passwd|cat /etc/group|cat /etc/shadow)"), "T1087 - Account Discovery",
+    match(input, "^(ps|top|netstat|ss)"), "T1057 - Process Discovery",
+    match(input, "^(ls|find|locate)"), "T1083 - File and Directory Discovery",
+    match(input, "(wget|curl|fetch)"), "T1105 - Ingress Tool Transfer",
+    match(input, "(useradd|adduser|passwd)"), "T1136 - Create Account",
+    match(input, "^(sudo|su)"), "T1548 - Abuse Elevation Control",
+    match(input, "(chmod|chown)"), "T1222 - File Permissions Modification",
+    1=1, "Other Activity"
+)
+| stats count by technique
+| sort -count
+
+# Attack Kill Chain Timeline
+index=honeypot earliest=0 
+| eval stage=case(
+    eventid="cowrie.login.failed", "1. Initial Access - Brute Force",
+    eventid="cowrie.login.success", "2. Initial Access - Success",
+    eventid="cowrie.command.input" AND match(input, "whoami|uname|id"), "3. Discovery - System Info",
+    eventid="cowrie.command.input" AND match(input, "cat /etc/passwd|cat /etc/shadow"), "4. Discovery - Credentials",
+    eventid="cowrie.command.input" AND match(input, "wget|curl"), "5. Execution - Malware Download",
+    eventid="cowrie.command.input" AND match(input, "useradd|passwd"), "6. Persistence - Backdoor",
+    eventid="cowrie.command.input" AND match(input, "sudo|su"), "7. Privilege Escalation",
+    1=1, "Other"
+)
+| timechart span=10m count by stage
+
+# Session Activity Analysis
+index=honeypot earliest=0 
+| stats 
+    min(_time) as first_seen,
+    max(_time) as last_seen,
+    dc(eventid) as event_types,
+    count(eval(eventid="cowrie.command.input")) as commands_run
+    by session
+| eval duration=tostring(last_seen-first_seen, "duration")
+| where commands_run > 0
+| sort -commands_run
+| head 20
+
+# ========== DASHBOARD 3: BEHAVIORAL ANALYSIS ==========
+
+# Command Sequence Analysis
+index=honeypot earliest=0 eventid=cowrie.command.input
+| transaction session maxspan=5m
+| eval command_count=mvcount(input)
+| where command_count >= 3
+| eval command_sequence=mvjoin(input, " → ")
+| stats count by command_sequence
+| sort -count
+| head 10
+
+# Credential Targeting Analysis
+index=honeypot earliest=0 (eventid=cowrie.login.success OR eventid=cowrie.login.failed)
+| stats 
+    count(eval(eventid="cowrie.login.failed")) as failed_attempts,
+    count(eval(eventid="cowrie.login.success")) as successful_logins,
+    values(password) as passwords_tried
+    by username
+| eval success_rate=round((successful_logins / (failed_attempts + successful_logins)) * 100, 2)
+| eval password_count=mvcount(passwords_tried)
+| sort -successful_logins
+
+# Attacker Persistence Classification
+index=honeypot earliest=0 
+| stats dc(session) as sessions by src_ip
+| eval behavior=case(
+    sessions == 1, "One-Time Attacker",
+    sessions >= 2 AND sessions <= 5, "Repeat Attacker",
+    sessions > 5, "Persistent Threat"
+)
+| stats count by behavior
