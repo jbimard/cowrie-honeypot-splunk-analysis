@@ -33,18 +33,16 @@ This project demonstrates end-to-end threat intelligence collection and analysis
 
 ### 1. Attack Overview Dashboard
 High-level metrics showing total events, login success/failure rates, top commands, and attack timeline.
-
-![Dashboard 1](screenshots/dashboard-overview.png)
+<img width="1439" height="809" alt="Screenshot 2026-01-26 at 5 27 06 PM" src="https://github.com/user-attachments/assets/50cc2257-9391-4473-9a43-9a363d9d7ea7" />
 
 ### 2. Threat Intelligence & Attack Chain Dashboard
 Maps observed attacker behavior to MITRE ATT&CK techniques, visualizes kill chain progression, and scores threat severity.
-
-![Dashboard 2](screenshots/dashboard-threat-intel.png)
+<img width="1440" height="811" alt="Screenshot 2026-01-26 at 5 27 28 PM" src="https://github.com/user-attachments/assets/2e81a047-b6c1-4cbf-953a-f598577100c4" />
 
 ### 3. Behavioral Analysis & Anomaly Detection Dashboard
 Analyzes command sequences, credential targeting patterns, attacker persistence, and session characteristics.
+<img width="1440" height="703" alt="Screenshot 2026-01-26 at 5 27 46 PM" src="https://github.com/user-attachments/assets/e447fe21-bbee-4646-b05e-9dd9847b06ed" />
 
-![Dashboard 3](screenshots/dashboard-behavioral.png)
 
 ## 🔍 Key Findings
 
