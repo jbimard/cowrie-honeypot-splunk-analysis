@@ -1,0 +1,49 @@
+# ============================================
+# BASIC ANALYSIS QUERIES
+# Cowrie Honeypot - Splunk Analysis
+# ============================================
+
+# Query 1: Event Type Breakdown
+# Shows distribution of all event types captured
+index=honeypot earliest=0
+| stats count by eventid
+| sort -count
+
+# Query 2: Login Attempts by Username
+# Analyzes which usernames attackers targeted
+index=honeypot earliest=0 (eventid=cowrie.login.success OR eventid=cowrie.login.failed)
+| stats count by eventid, username
+| sort -count
+
+# Query 3: Login Success Rate
+# Calculates percentage of successful vs failed logins
+index=honeypot earliest=0 (eventid=cowrie.login.success OR eventid=cowrie.login.failed)
+| stats count by eventid
+| eventstats sum(count) as total
+| eval percentage=round((count/total)*100, 2)
+
+# Query 4: Top Commands Executed
+# Lists most common commands attackers ran
+index=honeypot earliest=0 eventid=cowrie.command.input
+| stats count by input
+| sort -count
+| head 20
+
+# Query 5: Command Execution Timeline
+# Chronological view of all commands
+index=honeypot earliest=0 eventid=cowrie.command.input
+| table _time, src_ip, input
+| sort -_time
+
+# Query 6: Malicious Commands Detection
+# Identifies dangerous/suspicious commands
+index=honeypot earliest=0 eventid=cowrie.command.input 
+    (input="*wget*" OR input="*curl*" OR input="*/etc/shadow*" 
+     OR input="*useradd*" OR input="*sudo*" OR input="*chmod*")
+| table _time, src_ip, input
+| sort -_time
+
+# Query 7: Attack Activity Timeline
+# Visualizes attack volume over time
+index=honeypot earliest=0
+| timechart span=1h count by eventid
