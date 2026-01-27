@@ -33,7 +33,8 @@ This project demonstrates end-to-end threat intelligence collection and analysis
 
 ### 1. Attack Overview Dashboard
 High-level metrics showing total events, login success/failure rates, top commands, and attack timeline.
-<img width="1439" height="809" alt="Screenshot 2026-01-26 at 5 27 06 PM" src="cowrie-honeypot-splunk-analysis/screenshots/dashboard-1-overview.png" />
+<img width="1440" height="809" alt="dashboard-1-overview" src="https://github.com/user-attachments/assets/15b6c1ec-b791-4a8f-950f-2aa4444e2d47" />
+
 
 ### 2. Threat Intelligence & Attack Chain Dashboard
 Maps observed attacker behavior to MITRE ATT&CK techniques, visualizes kill chain progression, and scores threat severity.
