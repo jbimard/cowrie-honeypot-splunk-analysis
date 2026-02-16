@@ -5,7 +5,7 @@
 
 A comprehensive security research project deploying an SSH honeypot to capture real-world attack patterns and analyze attacker behavior using Splunk SIEM.
 
-## 🎯 Project Overview
+## Project Overview
 
 This project demonstrates end-to-end threat intelligence collection and analysis by:
 - Deploying a Cowrie SSH honeypot to capture attack attempts
@@ -19,7 +19,7 @@ This project demonstrates end-to-end threat intelligence collection and analysis
 - 14 MITRE ATT&CK techniques identified
 - 3 comprehensive Splunk dashboards created
 
-## 🛠️ Technical Stack
+## Technical Stack
 
 | Component | Technology |
 |-----------|-----------|
@@ -29,7 +29,7 @@ This project demonstrates end-to-end threat intelligence collection and analysis
 | Environment | Ubuntu 22.04 (ARM64) |
 | Virtualization | UTM (Apple Silicon) |
 
-## 📊 Dashboards
+## Dashboards
 
 ### 1. Attack Overview Dashboard
 High-level metrics showing total events, login success/failure rates, top commands, and attack timeline.
@@ -45,7 +45,7 @@ Analyzes command sequences, credential targeting patterns, attacker persistence,
 <img width="1440" height="703" alt="Screenshot 2026-01-26 at 5 27 46 PM" src="https://github.com/user-attachments/assets/e447fe21-bbee-4646-b05e-9dd9847b06ed" />
 
 
-## 🔍 Key Findings
+## Key Findings
 
 ### Attack Patterns
 - **Most targeted username:** root (95% of login attempts)
@@ -65,7 +65,7 @@ Analyzes command sequences, credential targeting patterns, attacker persistence,
 
 [View detailed findings →](docs/03-analysis-findings.md)
 
-## 📁 Repository Contents
+## Repository Contents
 ```
 ├── docs/               # Detailed documentation
 │   ├── setup-guide.md
@@ -76,7 +76,7 @@ Analyzes command sequences, credential targeting patterns, attacker persistence,
 └── resume/            # Resume-ready project bullets
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Ubuntu 22.04 (or compatible Linux)
@@ -104,7 +104,7 @@ bin/cowrie start
 
 [Full setup guide →](docs/01-setup-guide.md)
 
-## 📈 Splunk Queries
+## Splunk Queries
 
 ### Basic Analysis Queries
 - [Event type breakdown](queries/basic-analysis.spl)
@@ -116,7 +116,7 @@ bin/cowrie start
 - [Malicious command detection](queries/detection-rules.spl)
 - [Credential theft indicators](queries/detection-rules.spl)
 
-## 🎓 Skills Demonstrated
+## Skills Demonstrated
 
 - **Threat Intelligence:** Collected and analyzed real-world attack data
 - **SIEM Management:** Configured Splunk for security monitoring
@@ -124,17 +124,17 @@ bin/cowrie start
 - **Behavioral Analysis:** Identified attacker patterns and methodologies
 - **Documentation:** Comprehensive technical writing and knowledge transfer
 
-## 🔗 Related Links
+## Related Links
 
 - [Cowrie Honeypot Documentation](https://cowrie.readthedocs.io/)
 - [Splunk Documentation](https://docs.splunk.com/)
 - [MITRE ATT&CK Framework](https://attack.mitre.org/)
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see LICENSE file for details.
 
-## 👤 Author
+## Author
 
 **Joseph Posas**
 - Portfolio: [josephposas.com](https://josephposas.com)
